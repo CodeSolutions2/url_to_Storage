@@ -4,7 +4,9 @@
 <body>  
 
 <input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="BUCKET_NAME" type="text" value="" placeholder="BUCKET_NAME" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
+<button id="List_objects_in_an_AWS_bucket" onclick="List_objects_in_an_AWS_bucket()">List_objects_in_an_AWS_bucket</button>
 <button id="load_tarGZ_JS_way0" onclick="load_tarGZ_JS_way0()">load_tarGZ_JS_way0</button>
 <button id="load_tarGZ_JS_way1" onclick="load_tarGZ_JS_way1()">load_tarGZ_JS_way1</button>
 	
@@ -21,6 +23,27 @@
 
 <script>
 
+// -----------------------------------------------
+// NO API_KEY
+// -----------------------------------------------
+async function List_objects_in_an_AWS_bucket() {
+	
+	// List AWS contents of bucket to the output.
+
+	// https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjects.html
+	
+	// -------------------------------------
+	
+	const BUCKET_NAME = document.getElementById("BUCKET_NAME").value;
+
+	// -------------------------------------
+	
+	var url = `https://s3.amazonaws.com/${BUCKET_NAME}`
+  
+	var text = await call_fetch_methods(url, "text")
+	console.log('text: ', text);
+	
+}
 
 // -----------------------------------------------
 
@@ -69,6 +92,9 @@ async function call_fetch_method(url, typeOfOutput) {
 		
 	} else if (typeOfOutput == "blob") {
 		CORS_method_list = ["jQuery_blob_GET", "fetch_blob_GET"];
+		
+	} else if (typeOfOutput == "text") {
+		CORS_method_list = ["jQuery_text_GET", "fetch_text_GET"];
 	}
 	
 	var response = undefined;
@@ -86,6 +112,12 @@ async function call_fetch_method(url, typeOfOutput) {
 					response = await fetch_blob_GET(url);
 				} else {
 					response = await jQuery_blob_GET(url);
+				}
+			} else if (typeOfOutput == "text") {
+				if (i == 0) {
+					response = await fetch_text_GET(url);
+				} else {
+					response = await jQuery_text_GET(url);
 				}
 			}
 			
@@ -219,7 +251,64 @@ async function jQuery_blob_GET(url) {
 
 // -----------------------------------------------
 
+async function fetch_text_GET(url) {
+	
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+	};
+	
+	var options = { 
+		method : "GET",
+		mode: 'cors',
+		headers: new Headers(headers),
+		cache: "no-cache",
+		crossorigin: 'anonymous',
+		redirect: "follow"
+	};
+	
+	return await fetch(url, options)
+		.then(res => res.text())
+		.then(str_data => { return str_data; })
+		.catch(error => { console.error("error: ", error); });
 
+}
+
+// -----------------------------------------------
+
+async function jQuery_text_GET(url) {
+	
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+	};
+	
+	var settings = {
+		// url: url,
+		type : "GET",
+		async: true,
+		crossDomain: true,
+		beforeSend: function(xhr) {xhr.withCredentials = true;},
+		// headers: new Headers(headers),
+		xhrFields: {responseType: 'text'},
+		dataType: 'text',
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.error("error: ", error); }
+	};
+	
+	return $.ajax(url, [,settings]).done(function(response) { return response; });
+
+}
+
+// -----------------------------------------------
 
 	
 
