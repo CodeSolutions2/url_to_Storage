@@ -5,8 +5,9 @@
 
 <input id="url" type="text" value="https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
-<button id="load_tarGZ_JS" onclick="load_tarGZ_JS()">load_tarGZ_JS</button>
-
+<button id="load_tarGZ_JS_way0" onclick="load_tarGZ_JS_way0()">load_tarGZ_JS_way0</button>
+<button id="load_tarGZ_JS_way1" onclick="load_tarGZ_JS_way1()">load_tarGZ_JS_way1</button>
+	
 
 <!-- --------------------------------------------------- -->	
 
@@ -21,12 +22,30 @@
 
 // -----------------------------------------------
 
-async function load_tarGZ_JS() {
+async function load_tarGZ_JS_way0() {
 	
 	const url = document.getElementById("url").value;
 
-	// Use JavaScript to fetch tarGZ_data from Bucket
-	return await call_fetch_method(url);
+	// Use JavaScript to fetch tarGZ_data as an arrayBuffer
+	var arrayBuffer = await call_fetch_method(url, "arrayBuffer");
+	console.log("arrayBuffer: ", arrayBuffer);
+	
+}
+
+// -----------------------------------------------
+
+async function load_tarGZ_JS_way1() {
+	
+	const url = document.getElementById("url").value;
+
+	// Use JavaScript to fetch tarGZ_data as a blob
+	var blob = await call_fetch_method(url, "blob");
+	console.log("blob: ", blob);
+
+	// convert blob to a stream
+
+	
+	
 }
 
 // -----------------------------------------------
@@ -35,23 +54,34 @@ async function load_tarGZ_JS() {
 
 
 
-
-
 // -----------------------------------------------
 // SUBFUNCTIONS
 // -----------------------------------------------
-async function call_fetch_method(url) {
-	
-	const CORS_method_list = ["jQuery_tarGZ_GET", "fetch_tarGZ_GET"];
+async function call_fetch_method(url, typeOfOutput) {
+
+	if (typeOfOutput == "arrayBuffer") {
+		const CORS_method_list = ["jQuery_arrayBuffer_GET", "fetch_arrayBuffer_GET"];
+		
+	} else if (typeOfOutput == "blob") {
+		const CORS_method_list = ["jQuery_blob_GET", "fetch_blob_GET"];
+	}
 	
 	var response = undefined;
 		
 	for (var i=0; i<CORS_method_list.length; i++) {
 		try {
-			if (i == 0) {
-				response = await fetch_tarGZ_GET(url);
-			} else {
-				response = await jQuery_tarGZ_GET(url);
+			if (typeOfOutput == "arrayBuffer") {
+				if (i == 0) {
+					response = await fetch_arrayBuffer_GET(url);
+				} else {
+					response = await jQuery_arrayBuffer_GET(url);
+				}
+			} else if (typeOfOutput == "blob") {
+				if (i == 0) {
+					response = await fetch_blob_GET(url);
+				} else {
+					response = await jQuery_blob_GET(url);
+				}
 			}
 			
 		} catch (error) {
@@ -66,7 +96,7 @@ async function call_fetch_method(url) {
 
 // -----------------------------------------------
 
-async function fetch_tarGZ_GET(url) {
+async function fetch_arrayBuffer_GET(url) {
 	
 	var headers = {
 		"Content-Type": "application/json",
@@ -95,7 +125,7 @@ async function fetch_tarGZ_GET(url) {
 
 // -----------------------------------------------
 
-async function jQuery_tarGZ_GET(url) {
+async function jQuery_arrayBuffer_GET(url) {
 	
 	var headers = {
 		"Content-Type": "application/json",
@@ -125,6 +155,68 @@ async function jQuery_tarGZ_GET(url) {
 
 // -----------------------------------------------
 
+async function fetch_blob_GET(url) {
+	
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+	};
+	
+	var options = { 
+		method : "GET",
+		mode: 'cors',
+		headers: new Headers(headers),
+		cache: "no-cache",
+		crossorigin: 'anonymous',
+		redirect: "follow"
+	};
+	
+	return await fetch(url, options)
+		.then(res => res.blob())
+		.then(blob_object => { return blob_object; })
+		.catch(error => { console.error("error: ", error); });
+
+}
+
+// -----------------------------------------------
+
+async function jQuery_blob_GET(url) {
+	
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+	};
+	
+	var settings = {
+		// url: url,
+		type : "GET",
+		async: true,
+		crossDomain: true,
+		beforeSend: function(xhr) {xhr.withCredentials = true;},
+		// headers: new Headers(headers),
+		xhrFields: {responseType: 'blob'},
+		dataType: 'binary',
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.error("error: ", error); }
+	};
+	
+	return $.ajax(url, [,settings]).done(function(response) { return response; });
+
+}
+
+// -----------------------------------------------
+
+
+
+	
 
 
 </script>
