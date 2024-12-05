@@ -3,12 +3,9 @@
 <head></head>
 <body>  
 
-<input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-<input id="BUCKET_NAME" type="text" value="" placeholder="BUCKET_NAME" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="BUCKET_NAME" type="text" value="fast-ai-imageclas" placeholder="BUCKET_NAME" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
 <button id="List_objects_in_an_AWS_bucket" onclick="List_objects_in_an_AWS_bucket()">List_objects_in_an_AWS_bucket</button>
-<button id="load_tarGZ_JS_way0" onclick="load_tarGZ_JS_way0()">load_tarGZ_JS_way0</button>
-<button id="load_tarGZ_JS_way1" onclick="load_tarGZ_JS_way1()">load_tarGZ_JS_way1</button>
 	
 
 <!-- --------------------------------------------------- -->	
@@ -36,7 +33,7 @@ async function List_objects_in_an_AWS_bucket() {
 
 	// -------------------------------------
 	
-	var url = `https://s3.amazonaws.com/${BUCKET_NAME}`
+	var url = `https://s3.amazonaws.com/${BUCKET_NAME}/o`
   
 	var text = await call_fetch_method(url, "text")
 	console.log('text: ', text);
@@ -45,35 +42,6 @@ async function List_objects_in_an_AWS_bucket() {
 
 // -----------------------------------------------
 
-async function load_tarGZ_JS_way0() {
-
-	
-	const url = document.getElementById("url").value;
-
-	// Use JavaScript to fetch tarGZ_data as an arrayBuffer
-	var arrayBuffer = await call_fetch_method(url, "arrayBuffer");
-	console.log("arrayBuffer: ", arrayBuffer);
-
-	
-}
-
-// -----------------------------------------------
-
-async function load_tarGZ_JS_way1() {
-	
-	const url = document.getElementById("url").value;
-
-	// Use JavaScript to fetch tarGZ_data as a blob
-	var blob = await call_fetch_method(url, "blob");
-	console.log("blob: ", blob);
-
-	// convert blob to a stream
-
-	
-	
-}
-
-// -----------------------------------------------
 
 
 
@@ -85,13 +53,7 @@ async function load_tarGZ_JS_way1() {
 async function call_fetch_method(url, typeOfOutput) {
 
 	var CORS_method_list;
-	if (typeOfOutput == "arrayBuffer") {
-		CORS_method_list = ["jQuery_arrayBuffer_GET", "fetch_arrayBuffer_GET"];
-		
-	} else if (typeOfOutput == "blob") {
-		CORS_method_list = ["jQuery_blob_GET", "fetch_blob_GET"];
-		
-	} else if (typeOfOutput == "text") {
+	if (typeOfOutput == "text") {
 		CORS_method_list = ["jQuery_text_GET", "fetch_text_GET"];
 	}
 	
@@ -99,19 +61,7 @@ async function call_fetch_method(url, typeOfOutput) {
 		
 	for (var i=0; i<CORS_method_list.length; i++) {
 		try {
-			if (typeOfOutput == "arrayBuffer") {
-				if (i == 0) {
-					response = await fetch_arrayBuffer_GET(url);
-				} else {
-					response = await jQuery_arrayBuffer_GET(url);
-				}
-			} else if (typeOfOutput == "blob") {
-				if (i == 0) {
-					response = await fetch_blob_GET(url);
-				} else {
-					response = await jQuery_blob_GET(url);
-				}
-			} else if (typeOfOutput == "text") {
+			if (typeOfOutput == "text") {
 				if (i == 0) {
 					response = await fetch_text_GET(url);
 				} else {
@@ -131,123 +81,6 @@ async function call_fetch_method(url, typeOfOutput) {
 
 // -----------------------------------------------
 
-async function fetch_arrayBuffer_GET(url) {
-	
-	var headers = {
-		"Content-Type": "application/json",
-		"Referer": url,
-		"Origin": "https://codesolutions2.github.io",
-		"Connection": "keep-alive",
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-		"Access-Control-Allow-Origin": "*",
-	};
-	
-	var options = { 
-		method : "GET",
-		mode: 'cors',
-		headers: new Headers(headers),
-		cache: "no-cache",
-		crossorigin: 'anonymous',
-		redirect: "follow"
-	};
-	
-	return await fetch(url, options)
-		.then(res => res.arrayBuffer())
-		.then(arrayBuffer => { return arrayBuffer; })
-		.catch(error => { console.error("error: ", error); });
-
-}
-
-// -----------------------------------------------
-
-async function jQuery_arrayBuffer_GET(url) {
-	
-	var headers = {
-		"Content-Type": "application/json",
-		"Referer": url,
-		"Origin": "https://codesolutions2.github.io",
-		"Connection": "keep-alive",
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-		"Access-Control-Allow-Origin": "*",
-	};
-	
-	var settings = {
-		// url: url,
-		type : "GET",
-		async: true,
-		crossDomain: true,
-		beforeSend: function(xhr) {xhr.withCredentials = true;},
-		// headers: new Headers(headers),
-		xhrFields: {responseType: 'arrayBuffer'},
-		dataType: 'binary',
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.error("error: ", error); }
-	};
-	
-	return $.ajax(url, [,settings]).done(function(response) { return response; });
-
-}
-
-// -----------------------------------------------
-
-async function fetch_blob_GET(url) {
-	
-	var headers = {
-		"Content-Type": "application/json",
-		"Referer": url,
-		"Origin": "https://codesolutions2.github.io",
-		"Connection": "keep-alive",
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-		"Access-Control-Allow-Origin": "*",
-	};
-	
-	var options = { 
-		method : "GET",
-		mode: 'cors',
-		headers: new Headers(headers),
-		cache: "no-cache",
-		crossorigin: 'anonymous',
-		redirect: "follow"
-	};
-	
-	return await fetch(url, options)
-		.then(res => res.blob())
-		.then(blob_object => { return blob_object; })
-		.catch(error => { console.error("error: ", error); });
-
-}
-
-// -----------------------------------------------
-
-async function jQuery_blob_GET(url) {
-	
-	var headers = {
-		"Content-Type": "application/json",
-		"Referer": url,
-		"Origin": "https://codesolutions2.github.io",
-		"Connection": "keep-alive",
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-		"Access-Control-Allow-Origin": "*",
-	};
-	
-	var settings = {
-		// url: url,
-		type : "GET",
-		async: true,
-		crossDomain: true,
-		beforeSend: function(xhr) {xhr.withCredentials = true;},
-		// headers: new Headers(headers),
-		xhrFields: {responseType: 'blob'},
-		dataType: 'binary',
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.error("error: ", error); }
-	};
-	
-	return $.ajax(url, [,settings]).done(function(response) { return response; });
-
-}
-
-// -----------------------------------------------
 
 async function fetch_text_GET(url) {
 	
