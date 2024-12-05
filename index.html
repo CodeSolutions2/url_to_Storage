@@ -31,7 +31,7 @@ async function List_objects_in_an_AWS_bucket() {
 
 	// -------------------------------------
 	
-	var url = `https://s3.amazonaws.com/${BUCKET_NAME}/o`
+	var url = `https://s3.amazonaws.com/${BUCKET_NAME}`
   
 	var text = await call_fetch_method(url, "text")
 	console.log('text: ', text);
