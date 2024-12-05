@@ -59,11 +59,12 @@ async function load_tarGZ_JS_way1() {
 // -----------------------------------------------
 async function call_fetch_method(url, typeOfOutput) {
 
+	var CORS_method_list;
 	if (typeOfOutput == "arrayBuffer") {
-		const CORS_method_list = ["jQuery_arrayBuffer_GET", "fetch_arrayBuffer_GET"];
+		CORS_method_list = ["jQuery_arrayBuffer_GET", "fetch_arrayBuffer_GET"];
 		
 	} else if (typeOfOutput == "blob") {
-		const CORS_method_list = ["jQuery_blob_GET", "fetch_blob_GET"];
+		CORS_method_list = ["jQuery_blob_GET", "fetch_blob_GET"];
 	}
 	
 	var response = undefined;
