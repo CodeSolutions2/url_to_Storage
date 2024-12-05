@@ -61,9 +61,9 @@ async function call_fetch_method(url, typeOfOutput) {
 		try {
 			if (typeOfOutput == "text") {
 				if (i == 0) {
-					response = await fetch_text_GET(url);
-				} else {
 					response = await jQuery_text_GET(url);
+				} else {
+					response = await fetch_text_GET(url);
 				}
 			}
 			
