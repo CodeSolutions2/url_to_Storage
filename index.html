@@ -5,7 +5,7 @@
 
 <input id="url" type="text" value="https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
-<button id="train_predict_data" onclick="train_predict_data()">train_predict_data</button>
+<button id="load_tarGZ_JS" onclick="load_tarGZ_JS()">load_tarGZ_JS</button>
 
 
 <!-- --------------------------------------------------- -->	
@@ -87,8 +87,8 @@ async function fetch_tarGZ_GET(url) {
 	};
 	
 	return await fetch(url, options)
-		.then(res => res.text())
-		.then(str_data => { return str_data; })
+		.then(res => res.arrayBuffer())
+		.then(arrayBuffer => { return arrayBuffer; })
 		.catch(error => { console.error("error: ", error); });
 
 }
@@ -113,8 +113,8 @@ async function jQuery_tarGZ_GET(url) {
 		crossDomain: true,
 		beforeSend: function(xhr) {xhr.withCredentials = true;},
 		// headers: new Headers(headers),
-		xhrFields: {responseType: 'text'},
-		dataType: 'text',
+		xhrFields: {responseType: 'arrayBuffer'},
+		dataType: 'binary',
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.error("error: ", error); }
 	};
