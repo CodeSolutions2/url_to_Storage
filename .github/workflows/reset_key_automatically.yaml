@@ -18,7 +18,7 @@ jobs:
       - name: Reset the key automatically
         uses: actions/github-script@v6
         env:
-          DRAG_AND_DROP_TO_STORAGE_TOKEN0: "${{ secrets.DRAG_AND_DROP_TO_STORAGE_TOKEN0 }}"
+          URL_TO_STORAGE_TOKEN0: "${{ secrets.URL_TO_STORAGE_TOKEN0 }}"
         with:
           result-encoding: string
           script: |
@@ -74,7 +74,7 @@ jobs:
 
             // --------------------------------
 
-            var new_auth = process.env.DRAG_AND_DROP_TO_STORAGE_TOKEN0;
+            var new_auth = process.env.URL_TO_STORAGE_TOKEN0;
             // console.log('new_auth: ', new_auth);
 
             // --------------------------------
