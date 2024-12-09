@@ -3,9 +3,11 @@
 <head></head>
 <body>  
 
-<input id="BUCKET_NAME" type="text" value="fast-ai-imageclas" placeholder="BUCKET_NAME" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="BUCKET_NAME" type="text" value="" placeholder="BUCKET_NAME" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
+<input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
-<button id="List_objects_in_an_AWS_bucket" onclick="List_objects_in_an_AWS_bucket()">List_objects_in_an_AWS_bucket</button>
+<button id="run_selection" onclick="run_selection()">run_selection</button>
 	
 
 <!-- --------------------------------------------------- -->
@@ -14,37 +16,50 @@
 
 <!-- --------------------------------------------------- -->	
 
+
+<script type="module" crossorigin="*" redirect="follow" mode="cors">
+import { run_backend_process } from "https://cdn.jsdelivr.net/npm/library_to_run_github_actions@1.0.1/dist/library_to_run_GitHub_Actions.js";
+module.run_backend_process = run_backend_process;
+</script>
+
+<!-- --------------------------------------------------- -->
+	
 <script>
 
 // -----------------------------------------------
-// NO API_KEY
-// -----------------------------------------------
-async function List_objects_in_an_AWS_bucket() {
 	
-	// List AWS contents of bucket to the output.
-
-	// https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjects.html
-	
-	// -------------------------------------
-	
-	const BUCKET_NAME = document.getElementById("BUCKET_NAME").value;
-
-	// -------------------------------------
-	
-	var url = `https://s3.amazonaws.com/${BUCKET_NAME}`
+window.addEventListener('beforeunload', function() {
+	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+});
   
-	var text = await call_fetch_method(url, "text")
-	console.log('text: ', text);
+// -----------------------------------------------  
+
+async function run_selection() {
+
+	var BUCKET_NAME = btoa(document.getElementById("BUCKET_NAME").value);
 	
+	var url =  btoa(document.getElementById("url").value);
+	
+	// Save the start_workflow.txt file to the repository to start the backend workflow
+	var RepoAobj = {};
+	RepoAobj.repoOwner = 'CodeSolutions2';
+	RepoAobj.repoA_name = 'url_to_Storage';
+	RepoAobj.repoB_name = 'url_to_Storage';
+	RepoAobj.n = 1;
+	RepoAobj.foldername = 'src';
+	RepoAobj.filename = 'start_workflow.txt'; // filename to create in RepoB, in foldername
+	RepoAobj.input_text = BUCKET_NAME+"|"+url;
+	await module.run_backend_process(RepoAobj);
+
+	// --------------------------
+
+
+
+	// --------------------------
+
 }
 
-// -----------------------------------------------
-
-
-
-
-
-
+	
 // -----------------------------------------------
 // SUBFUNCTIONS
 // -----------------------------------------------
