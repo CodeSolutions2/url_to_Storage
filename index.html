@@ -3,10 +3,12 @@
 <head></head>
 <body>  
 
-<input id="BUCKET_NAME" type="text" value="" placeholder="BUCKET_NAME" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-
-<input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="BUCKET_URL" type="text" value="" placeholder="BUCKET_URL" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
+<input id="FILE_URL" type="text" value="" placeholder="FILE_URL" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
+<input id="CREDENTIALS" type="text" value="" placeholder="CREDENTIALS" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
 <button id="run_selection" onclick="run_selection()">run_selection</button>
 	
 
@@ -38,9 +40,11 @@ window.addEventListener('beforeunload', function() {
 
 async function run_selection() {
 
-	var BUCKET_NAME = btoa(document.getElementById("BUCKET_NAME").value);
+	var BUCKET_URL = btoa(document.getElementById("BUCKET_URL").value);
 	
-	var url =  btoa(document.getElementById("url").value);
+	var FILE_URL =  btoa(document.getElementById("FILE_URL").value);
+
+	var CREDENTIALS =  btoa(document.getElementById("CREDENTIALS").value);
 	
 	// Save the start_workflow.txt file to the repository to start the backend workflow
 	var RepoAobj = {};
@@ -50,7 +54,7 @@ async function run_selection() {
 	RepoAobj.n = 1;
 	RepoAobj.foldername = 'src';
 	RepoAobj.filename = 'start_workflow.txt'; // filename to create in RepoB, in foldername
-	RepoAobj.input_text = BUCKET_NAME+"|"+url;
+	RepoAobj.input_text = BUCKET_URL+"|"+FILE_URL+"|"+CREDENTIALS;
 	await module.run_backend_process(RepoAobj);
 
 	// --------------------------
